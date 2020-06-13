@@ -1,5 +1,4 @@
-# choochoochagachaga
-<a href="LICENSE" ><img src="https://img.shields.io/github/license/1487quantum/choochoochagachaga?style=for-the-badge"/></a>
+# Github Pages branch for Team Choochoochagachaga (SCDF X IBM Lifesavers' Innovation Challenge: Call for Code 2020)
 
-# License
-Licensed under the [BSD 3-Clause "New" or "Revised" License](./LICENSE).
+This is the code repository for the frontend of Team Choochoochagachaga's solution to Problem 2: Climate Change.
+The website can be found here: [link](#)
