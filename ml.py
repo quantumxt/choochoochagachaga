@@ -34,8 +34,8 @@ def query_altitude(embedded_data):
 def query_location(embedded_data):
     return embedded_data['location'].tolist()
 
-mission = pd.DataFrame(receive['info'].iloc[0]) # idk anyhow, change the iloc value
-print(mission.columns)
+mission = pd.DataFrame(pd.DataFrame(pd.DataFrame(receive['info']).iloc[0].iloc[0]).iloc[0][0]) # BATCH_NUMBER | TEAM_NUMBER | MEMBER
+# print(mission.head())
 print("Altitude", query_altitude(mission))
 print()
 print("Heart", query_heart(mission))
