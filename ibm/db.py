@@ -46,6 +46,7 @@ import numpy as np
 3) Altitude
 4) Location (X,Y)
 """
+
 NAMES = ["john", 'doe', 'ah teck', 'lim choo min', 'jacelyn teo', 'goel lalit', 'samuel', 'chewy baca']
 client = Cloudant.iam("adef00a8-b0a0-4d14-8305-6be0563ed542-bluemix", "zQRIu-XTG6EgQJRibXzJmkOUUwW-zVd-tCEEjGdmoh8H")
 client.connect()
@@ -57,18 +58,24 @@ if env_database.exists():
    print(f"'{db_name}' successfully created.")
 
 sample_data = []
-for i in range(np.random.randint(20)): # Person
-    batch_data = []
-    name = NAMES[np.random.randint(8)] + str(round(np.random.randn(), 3))
-    for j in range(500): #Training 
-        var = {"names": name, 
-               "time": int(time.time()), 
-               "bpm": np.random.randint(60, 120), 
-               "temperature": np.random.randint(20, 60), 
-               "altitude": np.random.randint(-10, 300), 
-               "location": [np.random.rand(), np.random.randn()]}
-        batch_data.append(var)    
-    sample_data.append(batch_data)
+now = int(time.time())
+TRAINING_TIME = np.random.randint(450, 600)
+
+for k in range(np.random.randint(5, 10)): # Team size
+    person_data = []
+    for i in range(np.random.randint(20)): # Person
+        sensors_data = []
+        name = NAMES[np.random.randint(8)] + str(int(100 * round(np.random.randn(), 3)))
+        for j in range(TRAINING_TIME): #Training 
+            var = {"names": name, 
+                "time": now + j, 
+                "bpm": np.random.randint(60, 120), 
+                "temperature": np.random.randint(20, 60), 
+                "altitude": np.random.randint(-10, 300), 
+                "location": [np.random.rand(), np.random.randn()]}
+            sensors_data.append(var)    
+        person_data.append(sensors_data)
+    sample_data.append(person_data)
 
 # {"basic_info": [{"name": , "age": , "height": , "weight": , "load": , "specs": , "exp": , "qual": , "ippt": }, 
 # {"name": , "age": , "height": , "weight": , "load": , "specs": , "exp": , "qual": , "ippt": }], 
@@ -86,7 +93,7 @@ for instance in sample_data:
 
     # Check that the document exists in the database.
     if env_document.exists():
-        print(f"Document '{instance[1]}' successfully created.")
+        print(f"Document '{instance}' successfully created.")
 
 result_collection = Result(env_database.all_docs)
 
