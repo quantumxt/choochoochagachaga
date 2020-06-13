@@ -59,7 +59,7 @@ if env_database.exists():
 sample_data = []
 for i in range(np.random.randint(20)): # Person
     batch_data = []
-    name = NAMES[np.random.randint(7)] + str(round(np.random.randn(), 3))
+    name = NAMES[np.random.randint(8)] + str(round(np.random.randn(), 3))
     for j in range(500): #Training 
         var = {"names": name, 
                "time": int(time.time()), 
