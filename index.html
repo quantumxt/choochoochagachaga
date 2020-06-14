@@ -386,6 +386,77 @@
 
     <!--Local Stuff-->
     <script>
+      // Pulling data from the database
+      // Have configured it to be not an asynchronous process
+      const account = "adef00a8-b0a0-4d14-8305-6be0563ed542-bluemix";
+      const api_key = "4aQghGIAIrBzsJRx2fbspghgtQXPWLTfmvZKpetOaO7K";
+      const cors_proxy = "http://0.0.0.0:8080/";
+      var iamRequest = new XMLHttpRequest();
+      var finalResponse;
+
+      iamRequest.open("POST", cors_proxy + "https://iam.cloud.ibm.com/identity/token", false);
+      // iamRequest.setRequestHeader("Allow-Control-Access-Origin", "http://127.0.0.1:5500");
+      iamRequest.setRequestHeader("Accept", "application/json");
+      iamRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      iamRequest.send("grant_type=urn:ibm:params:oauth:grant-type:apikey&response_type=cloud_iam&apikey=" + api_key);
+      var response = JSON.parse(iamRequest.responseText);
+      var access_token = response['access_token']; // IAM token obtained. Store permanently to be used throughout the rest of the script
+
+      function DataBaseQuery(iam, selector, async=false) {
+        iam.open("POST", cors_proxy + "https://" + account + ".cloudantnosqldb.appdomain.cloud/smart_environment/_find", async);
+        iam.setRequestHeader("Content-type", "application/json");
+        // iam.setRequestHeader("Accept", "application/json");
+        iam.setRequestHeader("Authorization", "Bearer " + access_token);
+        iam.send(JSON.stringify(selector));
+        finalResponse = JSON.parse(iam.responseText);
+        return finalResponse;
+      }
+      var data = DataBaseQuery(iamRequest, {"selector": {
+                                                  "_id": {
+                                                    "$gt": 0
+                                                  }
+                                              },
+                                              "fields": [
+                                                  "info"
+                                              ]
+                                            }, false);
+      // iamRequest.onreadystatechange(function(data) 
+      var BATCH_NUMBER = 0;
+      var PERSON = 0;
+      
+      function GetBatch(idx) {
+        return data['docs'][idx];
+      }
+
+      function GetPerson(batch, idx) {
+        return batch['info'][idx];
+      }
+
+      var person = GetPerson(GetBatch(BATCH_NUMBER), PERSON);
+
+      function GetPersonStats(person_info, info_str) {
+        /*
+        # {"basic_info": [{"name": , "age": , "height": , "weight": , "load": , "specs": , "exp": , "qual": , "ippt": }
+        */
+       var persons_stats = new Array();
+       for (i = 0; i < person_info.length; i++) {
+         persons_stats.push(person_info[i][info_str]);
+       }
+       return persons_stats
+      }
+      console.log(GetPersonStats(person, "load"));
+      // });
+
+      // const username = "adef00a8-b0a0-4d14-8305-6be0563ed542-bluemix";
+      // const Http = new XMLHttpRequest();
+      // var url = 'https://' + username + '.cloudant.com/smart_environment/_all_docs';
+      // Http.open("GET", url);
+      // Http.send();
+
+      // Http.onreadystatechange = (e) => {
+      //   console.log(Http.responseText)
+      // }
+
       jQuery(document).ready(function ($) {
         "use strict";
         // Traffic Chart using chartist
