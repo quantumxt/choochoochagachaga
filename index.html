@@ -465,6 +465,29 @@
        }
        return persons_stats
       }
+
+      function GetAverageStats(batch_number) {
+        statsReceiver = new XMLHttpRequest();
+        statsReceiver.open("GET", "http://ec2-54-179-157-184.ap-southeast-1.compute.amazonaws.com:8082/batch_stats", false);
+        // iamRequest.setRequestHeader("Allow-Control-Access-Origin", "http://127.0.0.1:5500");
+        statsReceiver.send("batch=" + batch_number);
+        finalResponse = JSON.parse(statsReceiver.responseText);
+        return finalResponse;
+      }
+
+      function ParseAverageStats(jsonObject) { 
+        // AltMax: 299
+        // AltMin: -9
+        // BPM: 89
+        // MissionTime: 7
+        // SpikesBPM: [[374, 61, 119], [358, 62, 116], [353, 63, 115]] (3)
+        // Temp: 39
+        // Trainee: "lim choo min-142"
+
+
+      }
+      console.log(GetAverageStats(1592072698));
+
       //console.log(GetPersonStats(person, "location"));
       // });
 
