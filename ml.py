@@ -19,17 +19,18 @@ from sklearn.ensemble import RandomForestRegressor
 from cloudant.client import Cloudant
 from cloudant.query import Query
 
+client = Cloudant.iam("adef00a8-b0a0-4d14-8305-6be0563ed542-bluemix", "4aQghGIAIrBzsJRx2fbspghgtQXPWLTfmvZKpetOaO7K", connect=True)
+client.connect()
+
+# Obtain database
+smart_env = client['smart_environment']
+query = Query(smart_env, selector={'_id': {'$gt': 0}})
+# print(pd.DataFrame(query()).head())
+receive = pd.DataFrame(query()['docs']).drop(['_id', '_rev'], axis=1)
+
 @app.route('/batch_stats', methods=['GET'])
 def get_batch_stats():
     batch_no = request.args.get("batch")
-    client = Cloudant.iam("adef00a8-b0a0-4d14-8305-6be0563ed542-bluemix", "4aQghGIAIrBzsJRx2fbspghgtQXPWLTfmvZKpetOaO7K", connect=True)
-    client.connect()
-
-    # Obtain database
-    smart_env = client['smart_environment']
-    query = Query(smart_env, selector={'_id': {'$gt': 0}})
-    # print(pd.DataFrame(query()).head())
-    receive = pd.DataFrame(query()['docs']).drop(['_id', '_rev'], axis=1)
     # Helper Functions
 
     # Heart Rate
