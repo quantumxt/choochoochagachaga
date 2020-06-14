@@ -12,8 +12,10 @@
     <meta name="description" content="Frontend for Team Choochoochagachaga" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png" />
-    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
 
     <link
       rel="stylesheet"
@@ -129,11 +131,11 @@
               <ul class="sub-menu children dropdown-menu">
                 <li>
                   <i class="fa fa-puzzle-piece"></i
-                  ><a href="details.html">Details</a>
+                  ><a href="#">Details</a>
                 </li>
                 <li>
                   <i class="fa fa-id-badge"></i
-                  ><a href="sensors.html">Sensors</a>
+                  ><a href="#">Sensors</a>
                 </li>
               </ul>
             </li>
@@ -151,11 +153,11 @@
               <ul class="sub-menu children dropdown-menu">
                 <li>
                   <i class="fa fa-table"></i
-                  ><a href="vitalsummary.html">At a glance</a>
+                  ><a href="#">At a glance</a>
                 </li>
                 <li>
                   <i class="fa fa-table"></i
-                  ><a href="hydration.html">Hydration records</a>
+                  ><a href="#">Hydration records</a>
                 </li>
               </ul>
             </li>
@@ -173,11 +175,11 @@
               <ul class="sub-menu children dropdown-menu">
                 <li>
                   <i class="menu-icon fa fa-th"></i
-                  ><a href="performancesummary.html">At a glance</a>
+                  ><a href="#">At a glance</a>
                 </li>
                 <li>
                   <i class="menu-icon fa fa-th"></i
-                  ><a href="performancereport.html">Detailed report</a>
+                  ><a href="#">Detailed report</a>
                 </li>
               </ul>
             </li>
@@ -492,13 +494,17 @@
 
       //clean location
       function getLocationLabels() {
+        var finalLocationArr = [];
         var locationArr = GetPersonStats(person, "location");
         var i; 
         for (i=0; i < locationArr.length; i++) {
-          locationArr[i][0] = Math.abs(locationArr[i][0]) * 100;
-          locationArr[i][1] = Math.abs(locationArr[i][1]) * 100;
+          var dict = {};
+          dict['x'] = Math.abs(locationArr[i][0]) * Math.random() * 100;
+          dict['y'] = Math.abs(locationArr[i][1]) * Math.random() * 100;
+          dict['radius'] = 30;
+          finalLocationArr.push(dict);
         }
-        return locationArr;
+        return finalLocationArr;
       }
       var locationLabels = getLocationLabels();
 
