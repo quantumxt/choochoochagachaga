@@ -3,7 +3,7 @@
 
 ForeSense is a highly modular wearable that pipes essential data such as heart-rate & temperature to IBM cloud for analysis and is displayed in an intuitive interface for commanders to push each trainee to his/her max.
 
-Checkout our dashboard [here](https://1487quanutm.github.io/choochoochagachaga)!
+Checkout our dashboard [here](https://1487quantum.github.io/choochoochagachaga)!
 
 
 
