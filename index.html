@@ -432,7 +432,7 @@
                                                   }
                                               },
                                               "fields": [
-                                                  "info",
+                                                  "info", "batch"
                                               ]
                                             }, false);
       // iamRequest.onreadystatechange(function(data) 
@@ -443,8 +443,9 @@
         return data['docs'][idx];
       }
 
-      function GetBatchNumbers(idx) {
-        return data['batch'][idx];
+      function GetBatchNumbers(batch, idx) {
+        console.log(batch['batch']);
+        // return data['batch'][idx];
       }
 
       function GetPerson(batch, idx) {
@@ -481,12 +482,13 @@
         // BPM: 89
         // MissionTime: 7
         // SpikesBPM: [[374, 61, 119], [358, 62, 116], [353, 63, 115]] (3)
+        // spike bpm is an arbitrarily lengthed array. Each entry indicate heart rate spikes
+        // The first entry is in seconds, rest in BPM. You might want to change it to minutes and seconds
         // Temp: 39
         // Trainee: "lim choo min-142"
-
-
       }
-      console.log(GetAverageStats(1592072698));
+      GetAverageStats(GetBatchNumbers(GetBatch(BATCH_NUMBER)));
+      // console.log(GetAverageStats(GetBatchNumbers(BATCH_NUMBER)));
 
       //console.log(GetPersonStats(person, "location"));
       // });
