@@ -20,15 +20,14 @@ from cloudant.client import Cloudant
 from cloudant.query import Query
 
 @app.route('/batch_stats', methods=['GET'])
-def get_batch_stats():
+def get_batch_stats()
     batch_no = request.args.get("batch")
     client = Cloudant.iam("adef00a8-b0a0-4d14-8305-6be0563ed542-bluemix", "4aQghGIAIrBzsJRx2fbspghgtQXPWLTfmvZKpetOaO7K", connect=True)
     client.connect()
 
     # Obtain database
     smart_env = client['smart_environment']
-    query = Query(smart_env, selector={'_id': {'$gt': 0}})
-    # print(pd.DataFrame(query()).head())
+    query = Query(smart_env, selector={'_id': {'batch': batch_no}})
     receive = pd.DataFrame(query()['docs']).drop(['_id', '_rev'], axis=1)
     # Helper Functions
 
@@ -90,14 +89,15 @@ def get_batch_stats():
     bpm_spikes =  get_bpm_spike(mission)
     spikes = []
     for i in range(len(bpm_spikes)):
-        spike_point = [int(end - bpm_spikes[i][2]), int(bpm_spikes[i][0]), int(bpm_spikes[i][1])]
+        spike_point = [end - bpm_spikes[i][2], bpm_spikes[i][0], bpm_spikes[i][1]]
         spikes.append(spike_point)
 
 
-    to_save = {"Trainee": mission.loc[0,"names"], "MissionTime": int(time_taken), 
+    to_save = {"Trainee": mission.loc[0,"names"], "MissionTime": time_taken, 
                "BPM": int(stats.loc["mean","bpm"]), "Temp": int(stats.loc["mean","temperature"]),
-               "AltMax": int(stats.loc["max","altitude"]), "AltMin": int(stats.loc["min","altitude"]),
+               "AltMax": stats.loc["max","altitude"], "AltMin": stats.loc["min","altitude"].
                "SpikesBPM": spikes}
-    return jsonify(to_save)
+
+    return send_file(json.dump(to_save))
 
 app.run(host="ec2-54-179-157-184.ap-southeast-1.compute.amazonaws.com", port=8082, debug=False)
