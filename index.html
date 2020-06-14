@@ -319,7 +319,17 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-                <h4 class="box-title">Heart Rate</h4>
+                <div class="row">
+                  <div class="col-lg-3">
+                    <h4 class="box-title">Heart Rate</h4>
+                  </div>
+                  <div class="col-lg-3">
+                    <h4 class="box-title" id="avgbpm">Average BPM: </h4>
+                  </div>
+                  <div class="col-lg-3">
+                    <h4 class="box-title" id="bpmSpike">BPM Spikes: </h4>
+                  </div>
+                </div>
               </div>
               <div class="card-body">
                   <canvas id="heartRate"></canvas>
@@ -330,7 +340,14 @@
             <div class="col-lg-12">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="box-title">Temperature</h4>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <h4 class="box-title">Temperature</h4>
+                    </div>
+                    <div class="col-lg-6">
+                      <h4 class="box-title" id="avgTemp">Average Temperature: </h4>
+                    </div>
+                  </div>
                 </div>
                 <div class="card-body">
                     <canvas id="Temp"></canvas>
@@ -447,7 +464,7 @@
 
       function GetBatchNumbers(batch, idx) {
         console.log(batch['batch']);
-        // return data['batch'][idx];
+        return batch['batch'][idx];
       }
 
       function GetPerson(batch, idx) {
@@ -455,7 +472,7 @@
       }
 
       var person = GetPerson(GetBatch(BATCH_NUMBER), PERSON);
-      //console.log(person)
+      console.log(person)
 
       //info_str can include altitude, bpm, location (in array), names, temperature, time
       function GetPersonStats(person_info, info_str) {
@@ -466,33 +483,32 @@
        for (i = 0; i < person_info.length; i++) {
          persons_stats.push(person_info[i][info_str]);
        }
-       return persons_stats
+       return persons_stats;
       }
 
-      function GetAverageStats(batch_number) {
-        statsReceiver = new XMLHttpRequest();
-        statsReceiver.open("GET", "http://ec2-54-179-157-184.ap-southeast-1.compute.amazonaws.com:8082/batch_stats", false);
-        // iamRequest.setRequestHeader("Allow-Control-Access-Origin", "http://127.0.0.1:5500");
-        statsReceiver.send("batch=" + batch_number);
-        finalResponse = JSON.parse(statsReceiver.responseText);
-        return finalResponse;
-      }
+      // function GetAverageStats(batch_number) {
+      //   statsReceiver = new XMLHttpRequest();
+      //   statsReceiver.open("GET", cors_proxy + "http://ec2-54-179-157-184.ap-southeast-1.compute.amazonaws.com:8082/batch_stats", false);
+      //   // iamRequest.setRequestHeader("Allow-Control-Access-Origin", "http://127.0.0.1:5500");
+      //   statsReceiver.send("batch=" + batch_number);
+      //   finalResponse = JSON.parse(statsReceiver.responseText);
+      //   return finalResponse;
+      // }
+      // var avgStats = GetAverageStats(GetBatchNumbers(GetBatch(BATCH_NUMBER)));
+      // console.log(avgStats);
 
-      function ParseAverageStats(jsonObject) { 
-        // AltMax: 299
-        // AltMin: -9
-        // BPM: 89
-        // MissionTime: 7
-        // SpikesBPM: [[374, 61, 119], [358, 62, 116], [353, 63, 115]] (3)
-        // spike bpm is an arbitrarily lengthed array. Each entry indicate heart rate spikes
-        // The first entry is in seconds, rest in BPM. You might want to change it to minutes and seconds
-        // Temp: 39
-        // Trainee: "lim choo min-142"
-      }
-      GetAverageStats(GetBatchNumbers(GetBatch(BATCH_NUMBER)));
-      // console.log(GetAverageStats(GetBatchNumbers(BATCH_NUMBER)));
-
-      //console.log(GetPersonStats(person, "location"));
+      // function ParseAverageStats(jsonObject) { 
+      //   AltMax: 299
+      //   AltMin: -9
+      //   BPM: 89
+      //   MissionTime: 7
+      //   SpikesBPM: [[374, 61, 119], [358, 62, 116], [353, 63, 115]] (3)
+      //   spike bpm is an arbitrarily lengthed array. Each entry indicate heart rate spikes
+      //   The first entry is in seconds, rest in BPM. You might want to change it to minutes and seconds
+      //   Temp: 39
+      //   Trainee: "lim choo min-142"
+      // }
+      
       // });
 
       // const username = "adef00a8-b0a0-4d14-8305-6be0563ed542-bluemix";
@@ -504,6 +520,14 @@
       // Http.onreadystatechange = (e) => {
       //   console.log(Http.responseText)
       // }
+
+      var bpmSpike = [[374, 61, 119], [358, 62, 116], [353, 63, 115]];
+      var avgTemp = 39;
+      var avgBPM = 89;
+
+      document.getElementById("avgbpm").innerHTML = "Average BPM: " + avgBPM.toString();
+      document.getElementById("avgTemp").innerHTML = "Average Temperature: " + avgTemp.toString();
+      document.getElementById("bpmSpike").innerHTML = "BPM Spike at: " + bpmSpike[0][0].toString() + "s, from " + bpmSpike[0][1].toString() + " to " + bpmSpike[0][2].toString();
 
       //clean time
       function getTimeLabels() {
@@ -524,8 +548,8 @@
         var i; 
         for (i=0; i < locationArr.length; i++) {
           var dict = {};
-          dict['x'] = Math.abs(locationArr[i][0]) * Math.random() * 100;
-          dict['y'] = Math.abs(locationArr[i][1]) * Math.random() * 100;
+          dict['x'] = Math.abs(locationArr[i][0]) * Math.random() * 500;
+          dict['y'] = Math.abs(locationArr[i][1]) * Math.random() * 500;
           dict['radius'] = 30;
           finalLocationArr.push(dict);
         }
