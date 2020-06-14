@@ -290,7 +290,7 @@
           <!-- /Widgets -->
 
           <!--  Vitals  -->
-          <div class="row">
+          <!-- <div class="row">
             <div class="col-lg-6">
               <div class="card">
                 <div class="card-body">
@@ -298,23 +298,47 @@
                 </div>
                 <div class="card-body">
                     <canvas id="heartRate"></canvas>
-                    <!-- <div id="traffic-chart" class="traffic-chart"></div> -->
                 </div>
               </div>
             </div>
 
             <div class="col-lg-6">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="box-title">Body Temperature</h4>
-                  </div>
-                  <div class="card-body">
-                      <canvas id="bodyTemp"></canvas>
-                  </div>
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="box-title">Body Temperature</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="bodyTemp"></canvas>
                 </div>
               </div>
-          </div>
+            </div>
+          </div> -->
+
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="box-title">Heart Rate</h4>
+              </div>
+              <div class="card-body">
+                  <canvas id="heartRate"></canvas>
+                  <!-- <div id="traffic-chart" class="traffic-chart"></div> -->
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="box-title">Temperature</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="Temp"></canvas>
+                </div>
+              </div>
+            </div>
+          
           <!--  /Vitals -->
+
+          
 
           <div class="clearfix"></div>
           
@@ -381,7 +405,7 @@
       // Have configured it to be not an asynchronous process
       const account = "adef00a8-b0a0-4d14-8305-6be0563ed542-bluemix";
       const api_key = "4aQghGIAIrBzsJRx2fbspghgtQXPWLTfmvZKpetOaO7K";
-      const cors_proxy = "http://0.0.0.0:8080/";
+      const cors_proxy = "https://cors-anywhere.herokuapp.com/";
       var iamRequest = new XMLHttpRequest();
       var finalResponse;
 
@@ -408,7 +432,7 @@
                                                   }
                                               },
                                               "fields": [
-                                                  "info"
+                                                  "info",
                                               ]
                                             }, false);
       // iamRequest.onreadystatechange(function(data) 
@@ -419,12 +443,18 @@
         return data['docs'][idx];
       }
 
+      function GetBatchNumbers(idx) {
+        return data['batch'][idx];
+      }
+
       function GetPerson(batch, idx) {
         return batch['info'][idx];
       }
 
       var person = GetPerson(GetBatch(BATCH_NUMBER), PERSON);
+      //console.log(person)
 
+      //info_str can include altitude, bpm, location (in array), names, temperature, time
       function GetPersonStats(person_info, info_str) {
         /*
         # {"basic_info": [{"name": , "age": , "height": , "weight": , "load": , "specs": , "exp": , "qual": , "ippt": }
@@ -435,7 +465,7 @@
        }
        return persons_stats
       }
-      console.log(GetPersonStats(person, "load"));
+      //console.log(GetPersonStats(person, "location"));
       // });
 
       // const username = "adef00a8-b0a0-4d14-8305-6be0563ed542-bluemix";
@@ -448,6 +478,30 @@
       //   console.log(Http.responseText)
       // }
 
+      //clean time
+      function getTimeLabels() {
+        var timeArr = GetPersonStats(person, "time");
+        var i;
+        var firstVal = timeArr[0];
+        for (i=0; i < timeArr.length; i++) {
+          timeArr[i] -= firstVal;
+        }
+        return timeArr;
+      }
+      var timeLabels = getTimeLabels();
+
+      //clean location
+      function getLocationLabels() {
+        var locationArr = GetPersonStats(person, "location");
+        var i; 
+        for (i=0; i < locationArr.length; i++) {
+          locationArr[i][0] = Math.abs(locationArr[i][0]) * 100;
+          locationArr[i][1] = Math.abs(locationArr[i][1]) * 100;
+        }
+        return locationArr;
+      }
+      var locationLabels = getLocationLabels();
+
       jQuery(document).ready(function ($) {
         "use strict";
 
@@ -459,27 +513,30 @@
           maxOpacity: .6,
           radius: 10,
         });
+        heatmap.addData(locationLabels);
 
         // boundaries for data generation
-        var width = (+window.getComputedStyle(document.body).width.replace(/px/,''));
-        var height = (+window.getComputedStyle(document.body).height.replace(/px/,''));
+        // var width = (+window.getComputedStyle(document.body).width.replace(/px/,''));
+        // var height = (+window.getComputedStyle(document.body).height.replace(/px/,''));
 
-        var generate = function() {
+        // var generate = function() {
 
-          var x = (Math.random()* width) >> 0;
-          var y = (Math.random()* height) >> 0;
-          var r = (Math.random()* 100) >> 0;
+        //   var x = (Math.random()* width) >> 0;
+        //   var y = (Math.random()* height) >> 0;
+        //   var r = (Math.random()* 100) >> 0;
 
-          // add the datapoint to heatmap instance
-          heatmap.addData({ x: x, y:y, radius: r});
-        };
+        //   console.log(x,y,r);
 
-        // this generates new datapoints in a kind of random timing
-        setTimeout(function test() {
-          var rand = (Math.random() * 500) >> 0;
-          generate();
-          setTimeout(test, rand);
-        }, 100);
+        //   // add the datapoint to heatmap instance
+        //   heatmap.addData({ x: x, y:y, radius: r});
+        // };
+
+        // // this generates new datapoints in a kind of random timing
+        // setTimeout(function test() {
+        //   var rand = (Math.random() * 500) >> 0;
+        //   generate();
+        //   setTimeout(test, rand);
+        // }, 100);
         // end heatmap
 
 
@@ -528,20 +585,19 @@
         // Traffic Chart using chartist End
         
         //heart rate graphing
-
         if ($("#heartRate").length) {
           var ctx = document.getElementById("heartRate");
           ctx.height = 150;
           var myChart = new Chart(ctx, {
             type: "line",
             data: {
-              labels: ["0900", "0910", "0920", "0930", "0940", "0950", "1000", "1010", "1020", "1030"],
+              labels: timeLabels,
               datasets: [
                 {
                   label: "Heart Rate",
                   borderColor: "rgba(4, 73, 203, 1)",
                   borderWidth: "1",
-                  data: [62, 65, 59, 70, 85, 90, 96, 80, 83, 86],
+                  data: GetPersonStats(person, "bpm"),
                   lineTension: 0,
                 },
                 // {
@@ -586,19 +642,19 @@
         //end heart rate
 
         //body temp graph
-        if ($("#bodyTemp").length) {
-          var ctx = document.getElementById("bodyTemp");
+        if ($("#Temp").length) {
+          var ctx = document.getElementById("Temp");
           ctx.height = 150;
           var myChart = new Chart(ctx, {
             type: "line",
             data: {
-              labels: ["0900", "0910", "0920", "0930", "0940", "0950", "1000", "1010", "1020", "1030"],
+              labels: timeLabels,
               datasets: [
                 {
                   label: "Body Temp.",
                   borderColor: "rgba(4, 73, 203, 1)",
                   borderWidth: "1",
-                  data: [36, 38, 38, 37, 39, 38, 37, 37, 38, 36],
+                  data: GetPersonStats(person, "temperature"),
                   lineTension: 0,
                 },
               ],
@@ -654,12 +710,6 @@
           }
         );
         // Bar Chart #flotBarChart End
-
-        jQuery.ajaxPrefilter(function(options) {
-          if (options.crossDomain && jQuery.support.cors) {
-            options.url = 'https://cors-anywhere.herokuapp.com/' + options.url;
-          }
-        });
       });
     </script>
   </body>
