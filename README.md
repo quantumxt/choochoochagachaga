@@ -7,7 +7,7 @@ ForeSense is a highly modular wearable that pipes essential data such as heart-r
 
 ![ForeSense Hardware](./assets/img/foresense_front.jpg "ForeSense Headband")
 
-Checkout our dashboard [here](https://1487quantum.github.io/choochoochagachaga)!
+Checkout our dashboard [here](https://quantumxt.github.io/choochoochagachaga)!
 
 
 
